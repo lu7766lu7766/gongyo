@@ -3,15 +3,23 @@
 import Vue from 'vue'
 import App from './App'
 import store from './store'
+import router from './router'
+
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
+import './assets/styles/slidebar.css'
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   template: '<App/>',
   components: { App },
   store,
+  router,
   mounted () {
-    if (store.state.login_msg.email) {
+    if (!store.state.login_msg.user) {
       store.dispatch('GOOGLELOGIN')
     }
+    store.dispatch('GET_LEAGUE')
+    store.dispatch('GET_RING')
+    store.dispatch('GET_AREA')
   }
 })

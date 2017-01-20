@@ -33,24 +33,24 @@ module.exports = {
     fallback: [path.join(__dirname, '../node_modules')]
   },
   module: {
-    preLoaders: [
-      {
-        test: /\.vue$/,
-        loader: 'eslint',
-        include: [
-          path.join(projectRoot, 'src')
-        ],
-        exclude: /node_modules/
-      },
-      {
-        test: /\.js$/,
-        loader: 'eslint',
-        include: [
-          path.join(projectRoot, 'src')
-        ],
-        exclude: /node_modules/
-      }
-    ],
+    // preLoaders: [
+    //   {
+    //     test: /\.vue$/,
+    //     loader: 'eslint',
+    //     include: [
+    //       path.join(projectRoot, 'src')
+    //     ],
+    //     exclude: /node_modules/
+    //   },
+    //   {
+    //     test: /\.js$/,
+    //     loader: 'eslint',
+    //     include: [
+    //       path.join(projectRoot, 'src')
+    //     ],
+    //     exclude: /node_modules/
+    //   }
+    // ],
     loaders: [
       {
         test: /\.vue$/,
@@ -67,6 +67,10 @@ module.exports = {
       {
         test: /\.json$/,
         loader: 'json'
+      },
+      {
+        test: /\.less$/,
+        loader: 'less'
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

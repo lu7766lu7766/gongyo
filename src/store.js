@@ -52,6 +52,7 @@ export default new Vuex.Store({
           var val = ref.val()
           if (!val) {
             val = defaultInfo
+            val.name = user.displayName
             var updates = {}
             updates[id] = val
             db.ref('user').update(updates)
@@ -75,7 +76,7 @@ export default new Vuex.Store({
         commit('log_ring', ref.val())
       })
     },
-    GET_AREA ({area}) {
+    GET_AREA ({commit}) {
       db.ref('area').on('value', function (ref) {
         store.set('area', ref.val())
         commit('log_area', ref.val())
