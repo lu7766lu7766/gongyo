@@ -1,0 +1,23 @@
+{ 
+  "Firebase": {
+    "config": {
+        "apiKey": "AIzaSyCRhcanMYI9e4T9eUpkpqkTZgYkQI6ehK0",
+        "authDomain": "gongyo-ae621.firebaseapp.com",
+        "databaseURL": "https://gongyo-ae621.firebaseio.com",
+        "storageBucket": "gongyo-ae621.appspot.com",
+        "messagingSenderId": "912768128140"
+    },
+    "defaultInfo": {
+      "area" : 0,
+      "chanting" : {},
+      "dailyTarget" : 0,
+      "friends" : [],
+      "isChanting" : 0,
+      "isShared" : 0,
+      "leagues" : [],
+      "name" : "",
+      "receive" : [],
+      "ring" : 0
+    }
+  }
+}

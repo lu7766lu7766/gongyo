@@ -1,17 +1,30 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <hello></hello>
+    {{login_msg|json}}<br>
+    {{user|json}}
+    <button @click="googleLogin">google login</button>
   </div>
 </template>
 
 <script>
-import Hello from './components/Hello'
-
 export default {
   name: 'app',
-  components: {
-    Hello
+  data () {
+    return {
+    }
+  },
+  methods: {
+    googleLogin () {
+
+    }
+  },
+  computed: {
+    user () {
+      return this.$store.state.user
+    },
+    login_msg () {
+      return this.$store.state.login_msg
+    }
   }
 }
 </script>
