@@ -1,7 +1,6 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import App from './App'
 import store from './store'
 import router from './router'
 
@@ -10,13 +9,14 @@ import './assets/styles/slidebar.css'
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  template: '<App/>',
-  components: { App },
+  template: '<router-view transition="slide"></router-view>',
   store,
   router,
   mounted () {
-    if (!store.state.login_msg.user) {
+    if (!store.getters.isLogin) {
       store.dispatch('GOOGLELOGIN')
+    } else {
+      router.push('/aboutme')
     }
     store.dispatch('GET_LEAGUE')
     store.dispatch('GET_RING')

@@ -10,10 +10,12 @@
     <div id="wrapper" style="margin-top:50px" @click="closeMenu">
         <div id="sidebar-wrapper">
             <ul class="mainmenu sidebar-nav">
-              <li><router-link to="/">回報題目數</router-link></li>
+              <li><router-link to="/feedback">回報題目數</router-link></li>
               <li><router-link to="/friends">好友</router-link></li>
               <li><router-link to="/aboutme">關於我</router-link></li>
-            </ul>        
+              <li><a v-if="!isLogin" @click="login">登入</a></li>
+              <li><a v-if="isLogin" @click="logout">登出</a></li>
+            </ul>
         </div>
         <div id="page-content-wrapper" style="min-height: 246.909px;">
             <div id="main-content" class="container-fluid" style="min-height: 182px; padding-bottom: 15px;">
@@ -35,7 +37,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import $ from 'jquery'
 
 export default {
@@ -50,15 +52,27 @@ export default {
     },
     closeMenu () {
       $('#wrapper').removeClass('toggled')
+    },
+    login () {
+      this.$store.dispatch('GOOGLELOGIN')
+    },
+    logout () {
+      this.$store.dispatch('GOOGLELOGOUT')
     }
   },
-  computed: mapState({
-    user: 'user',
-    login_msg: 'login_msg',
-    ring: 'ring',
-    area: 'area',
-    league: 'league'
-  })
+  computed: {
+    ...mapState([
+      'user',
+      'login_msg',
+      'ring',
+      'area',
+      'league',
+      'id'
+    ]),
+    ...mapGetters([
+      'isLogin'
+    ])
+  }
 }
 </script>
 
@@ -81,7 +95,7 @@ export default {
   position:fixed;
   bottom: 0;
   width: 100%;
-  border-top-color: rgba(0, 0, 0, 0.4); 
-  transition: background 0.3s ease padding 0.3s ease; 
+  border-top-color: rgba(0, 0, 0, 0.4);
+  transition: background 0.3s ease padding 0.3s ease;
 }
 </style>

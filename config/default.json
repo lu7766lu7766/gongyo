@@ -8,16 +8,15 @@
         "messagingSenderId": "912768128140"
     },
     "defaultInfo": {
-      "area" : 0,
-      "chanting" : {},
-      "dailyTarget" : 0,
+      "area" : "",
+      "dailyTarget" : 10,
       "friends" : [],
       "isChanting" : 0,
       "isShared" : 0,
       "leagues" : [],
       "name" : "",
       "receive" : [],
-      "ring" : 0
+      "ring" : ""
     }
   }
 }

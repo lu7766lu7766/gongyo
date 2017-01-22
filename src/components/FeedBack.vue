@@ -52,7 +52,7 @@ export default {
 			return Math.floor(this.chanting/60)
 		},
 		currentArea () {
-			return this.areas[this.user.ring][this.user.area] + '區'
+      return this.areas[this.user.ring][this.user.area] + '區'
 		}
   })
 }

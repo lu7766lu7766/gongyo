@@ -2,7 +2,7 @@
   <div class="ablutme">
 		<div class="form-group">
 			<label>所屬圈:</label>
-			<select class="form-control" placeholder="所屬圈" v-model="user.ring" :disabled="!isEdit" @change="chgRing">
+			<select class="form-control" placeholder="所屬圈" v-model="user.ring" :disabled="!isEdit" @change="user.area = 0">
 				<option v-for="(ring,index) in rings" :value="index">{{ring}}圈</option>
 			</select>
 		</div>
@@ -21,14 +21,16 @@
 			<input type="text" class="form-control" placeholder="每日題目目標數" v-model="user.dailyTarget" :readonly="!isEdit">
 		</div>
 		<button v-show="!isEdit" class="btn btn-default" @click="isEdit = !isEdit">修改</button>
-		<button v-show="isEdit" class="btn btn-info" @click="isEdit = !isEdit">存檔</button>
+		<button v-show="isEdit" class="btn btn-info" @click="save">存檔</button>
 		<!--<br>
-		{{user|json}}<br>-->
+		{{user|json}}<br>
+    {{login_msg|json}}<br>-->
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import Firebase from 'firebase'
 
 export default {
   data () {
@@ -37,9 +39,10 @@ export default {
     }
   },
 	methods: {
-		chgRing () {
-			this.user.area = 0
-		}
+    save () {
+      this.isEdit = !this.isEdit
+      this.$store.commit('user_update')
+    }
 	},
   computed: mapState({
     user: 'user',
