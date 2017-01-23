@@ -16,6 +16,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    db: db,
     id: storage.get('id') || "",
     login_msg: storage.get('login_msg') || {},
     user: storage.get('user') || {},
@@ -61,8 +62,8 @@ export default new Vuex.Store({
 
         storage.set('login_msg', loginMsg)
         commit('log_login_msg', loginMsg)
-        
-        
+
+
         router.push('/aboutme')
       }).catch(function (error) {
         console.log('errorCode:' + error.code)
@@ -70,7 +71,7 @@ export default new Vuex.Store({
     },
     GOOGLELOGOUT ({dispatch, commit}) {
       // var user = Firebase.auth().currentUser;
-      
+
       Firebase.auth().signOut().then(function() {
         // Sign-out successful.
         storage.clear()
@@ -142,7 +143,10 @@ export default new Vuex.Store({
   getters: {
     isLogin: state => {
       // var user = Firebase.auth().currentUser
-      return !!state.login_msg.user // 
+      return !!state.login_msg.user //
+    },
+    canUse: state => {
+      return state.user.ring && state.user.area
     }
   }
 })

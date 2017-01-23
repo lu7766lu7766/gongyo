@@ -1,14 +1,48 @@
 <template>
   <div class="aboutme">
 		<h3><b>查題目數</b></h3>
-		<select v-model="searchMode">
-			<option></option>
-		</select>
+    <div class="form-group">
+			<label>你想查詢？:</label>
+			<select v-model="searchMode">
+        <option v-for="(type, index) in searchType" :value="index">{{type}}</option>
+      </select>
+		</div>
+
+    <div class="form-group" v-if="searchMode==1">
+			<label>你想查詢的範圍？:</label>
+			<select v-model="partnerMode">
+        <option v-for="(type, index) in partnerType" :value="index">{{type}}</option>
+      </select>
+		</div>
+
+    <div class="form-inline">
+        <label>開始時間:</label>
+        <vue-datetime-picker class="vue-picker3"
+                              :model.sync="startDate"
+                              type="date"
+                              language="en-US"
+                              date-format="L">
+          </vue-datetime-picker>
+    </div>
+
+    <div class="form-inline">
+        <label>結束時間:</label>
+        <vue-datetime-picker class="vue-picker3"
+                              :model.sync="stopDate"
+                              type="date"
+                              language="en-US"
+                              date-format="L">
+          </vue-datetime-picker>
+    </div>
+
+    <button class="btn btn-primary" @click="get_chanting">查詢</button>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+
+// Vue.use(VueTimepicker)
 
 export default {
   data () {
@@ -21,13 +55,34 @@ export default {
 			partnerMode: 0,
 			partnerType: [
 				"圈","區"
-			]
+			],
+      startDate: '',
+      stopDate: '',
+      chantings: {}
     }
   },
+  components: {
+    "vue-datetime-picker": VueTimepicker
+  },
 	methods: {
-    
+    get_chanting () {
+      if (this.searchMode == 0) {
+        this.$store.state.db.ref('chanting/' + this.$store.state.id)
+          .startAt(this.startDate)
+          .endAt(this.stopDate)
+          .on('value', function (result) {
+            chantings = result.val()
+        })
+      } else {
+        if (this.partnerMode == 0) {
+
+        } else {
+
+        }
+      }
+    }
 	},
-  computed: 
+  computed:
 	mapState({
     user: 'user',
     rings: 'ring',
