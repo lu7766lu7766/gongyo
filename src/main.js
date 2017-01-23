@@ -6,6 +6,7 @@ import router from './router'
 
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './assets/styles/slidebar.css'
+import './lib'
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -13,13 +14,10 @@ new Vue({
   store,
   router,
   mounted () {
-    if (!store.getters.isLogin) {
-      store.dispatch('GOOGLELOGIN')
-    } else {
-      router.push('/aboutme')
-    }
+    // Promise.all([store.dispatch('GET_LEAGUE'),store.dispatch('GET_RING'),store.dispatch('GET_AREA')]).then(() => { console.log('all done'')})
     store.dispatch('GET_LEAGUE')
     store.dispatch('GET_RING')
     store.dispatch('GET_AREA')
+    // console.log('main mounted') just first time
   }
 })

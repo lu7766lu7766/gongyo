@@ -1,8 +1,9 @@
 <template>
-  <div class="ablutme">
+  <div class="feedback">
+		<h3><b>回報題目數</b></h3>
 		<div class="form-group">
 			<label>今日題目分鐘數:</label>
-			<input type="text" class="form-control" placeholder="今日題目分鐘數" v-model="mins">
+			<input type="text" class="form-control" placeholder="今日題目分鐘數" v-model="mins" @focus="focusChanting">
 		</div>
 		<div class="form-group">
 			<label>計時小幫手</label>:</label>
@@ -12,10 +13,7 @@
 				<button class="btn btn-danger" @click="chanting=0">重置</button>
 			</div>
 		</div>
-		<button class="btn btn-primary" @click="">送出</button>
-		<div class="form-group">
-			<h3>{{currentArea}}目前總題目數</h3>
-		</div>
+		<button class="btn btn-primary" @click="update_chanting">送出</button>
 		<!--<br>
 		{{user|json}}<br>-->
   </div>
@@ -28,7 +26,8 @@ let timer
 export default {
   data () {
     return {
-      chanting: 0
+      chanting: 0,
+			isAlerted: false
     }
   },
 	methods: {
@@ -42,19 +41,35 @@ export default {
 				clearInterval(timer)
 				timer = null
 			}
+		},
+		focusChanting () {
+			if (!this.isAlerted) {
+				alert('立足於天地，但求無愧於心!')
+			}
+			this.isAlerted = true
+		},
+		update_chanting () {
+			this.$store.dispatch('UPDATE_CHANTING', { mins: this.mins})
 		}
 	},
-  computed: mapState({
-    user: 'user',
-    leagues: 'league',
-    areas: 'area',
-		mins () {
-			return Math.floor(this.chanting/60)
+  computed: { 
+		mins: {
+			get () {
+				return Math.floor(this.chanting / 60)
+			},
+			set (value) {
+				this.chanting = value * 60
+			}
 		},
 		currentArea () {
       return this.areas[this.user.ring][this.user.area] + '區'
-		}
-  })
+		},
+		...mapState({
+			user: 'user',
+			leagues: 'league',
+			areas: 'area'
+		})
+	}
 }
 </script>
 

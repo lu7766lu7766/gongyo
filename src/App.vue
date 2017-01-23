@@ -11,21 +11,24 @@
         <div id="sidebar-wrapper">
             <ul class="mainmenu sidebar-nav">
               <li><router-link to="/feedback">回報題目數</router-link></li>
-              <li><router-link to="/friends">好友</router-link></li>
+              <li><router-link to="/getchanting">查題目數</router-link></li>
               <li><router-link to="/aboutme">關於我</router-link></li>
+              
+              <li><router-link to="/friends">好友</router-link></li>
               <li><a v-if="!isLogin" @click="login">登入</a></li>
               <li><a v-if="isLogin" @click="logout">登出</a></li>
+              <li><a @click="showLog">Show Log</a></li>
             </ul>
         </div>
         <div id="page-content-wrapper" style="min-height: 246.909px;">
-            <div id="main-content" class="container-fluid" style="min-height: 182px; padding-bottom: 15px;">
+            <div id="main-content" class="container-fluid" style="min-height: 182px; padding-bottom: 15px;">{{id}}--
                 <router-view transition="slide"></router-view>
             </div><!--main-content-->
         </div><!--page-content-wrapper-->
     </div>
     <div id="footer">
         <footer class="main-footer text-center panel-footer" >
-            <strong>Copyright©2017 All Design By Jac Wang</strong>
+            <strong>Copyright©{{new Date().getFullYear()}} All Design By Jac Wang</strong>
         </footer>
     </div>
     <!--{{login_msg|json}}<br>
@@ -54,10 +57,20 @@ export default {
       $('#wrapper').removeClass('toggled')
     },
     login () {
-      this.$store.dispatch('GOOGLELOGIN')
+      // this.$store.dispatch('GOOGLELOGIN')
+      this.$router.push('/')
     },
     logout () {
       this.$store.dispatch('GOOGLELOGOUT')
+    }, 
+    showLog () {
+      console.log('id: ' + this.id)
+      console.log('user: ' + JSON.stringify(this.user))
+      console.log('bak_user: ' + JSON.stringify(this.bak_user))
+      console.log('ring: ' + JSON.stringify(this.ring))
+      console.log('area: ' + JSON.stringify(this.area))
+      console.log('league: ' + JSON.stringify(this.league))
+      //console.log('login_msg: ' + JSON.stringify(this.login_msg))
     }
   },
   computed: {
@@ -67,7 +80,8 @@ export default {
       'ring',
       'area',
       'league',
-      'id'
+      'id',
+      'bak_user'
     ]),
     ...mapGetters([
       'isLogin'

@@ -1,5 +1,6 @@
 <template>
-  <div class="ablutme">
+  <div class="aboutme">
+		<h3><b>關於我</b></h3>
 		<div class="form-group">
 			<label>所屬圈:</label>
 			<select class="form-control" placeholder="所屬圈" v-model="user.ring" :disabled="!isEdit" @change="user.area = 0">
@@ -30,7 +31,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import Firebase from 'firebase'
 
 export default {
   data () {
@@ -41,18 +41,26 @@ export default {
 	methods: {
     save () {
       this.isEdit = !this.isEdit
-      this.$store.commit('user_update')
+      this.$store.dispatch('UPDATE_USER')
     }
 	},
-  computed: mapState({
-    user: 'user',
-    rings: 'ring',
-    areas: 'area',
-    leagues: 'league',
+  computed: {
 		currentArea () {
-			return this.areas[this.user.ring]
-		}
-  })
+				return this.areas[this.user.ring]
+		},
+		...mapState({
+			user: 'user',
+			rings: 'ring',
+			areas: 'area',
+			leagues: 'league'
+		})
+	},
+	mounted () {
+		// 不先取，select會讀不到值，屬性會被刷成空值
+		Promise.all([this.$store.dispatch('GET_RING'),this.$store.dispatch('GET_AREA')]).then(()=>{
+			this.$store.dispatch('GET_USER')
+		})
+	}
 }
 </script>
 

@@ -3,8 +3,9 @@ import Vuex from 'vuex'
 
 import config from '../config/default'
 import Firebase from 'firebase'
-import store from 'store'
+import storage from 'store'
 import router from './router'
+import _ from 'lodash'
 
 var dbConf = config.Firebase.config
 var defaultInfo = config.Firebase.defaultInfo
@@ -15,15 +16,17 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    id: store.get('id') || "",
-    login_msg: store.get('login_msg') || {},
-    user: store.get('user') || {},
-    ring: store.get('ring') || {},
-    area: store.get('area') || {},
-    league: store.get('league') || {}
+    id: storage.get('id') || "",
+    login_msg: storage.get('login_msg') || {},
+    user: storage.get('user') || {},
+    bak_user: storage.get('user') || {},
+    ring: storage.get('ring') || {},
+    area: storage.get('area') || {},
+    league: storage.get('league') || {}
   },
   mutations: {
     log_login_msg (state, data) {
+      state.id = data.user.email.split('@')[0]
       state.login_msg = data
     },
     log_user (state, data) {
@@ -38,15 +41,17 @@ export default new Vuex.Store({
     log_area (state, data) {
       state.area = data
     },
-    user_update (state) {
-      var updates = {}
-      updates['/user/' + state.id] = state.user
-      db.ref().update(updates)
-      alert('修改完成')
+    logout (state) {
+      state.id = ''
+      state.login_msg = {}
+      state.user = {}
+      state.ring = {}
+      state.area = {}
+      state.league = {}
     }
   },
   actions: {
-    GOOGLELOGIN ({commit, state}) {
+    GOOGLELOGIN ({commit, state, dispatch}) {
       var provider = new Firebase.auth.GoogleAuthProvider()
       provider.addScope('https://www.googleapis.com/auth/plus.login')
       Firebase.auth().signInWithPopup(provider).then(function (result) {
@@ -54,58 +59,90 @@ export default new Vuex.Store({
         var user = result.user
         var loginMsg = {token, user}
 
-        store.set('login_msg', loginMsg)
+        storage.set('login_msg', loginMsg)
         commit('log_login_msg', loginMsg)
-        state.id = user.email.split('@')[0]
-
-        db.ref('user/' + state.id).on('value', function (ref) {
-          var val = ref.val()
-          if (!val) {
-            val = defaultInfo
-            val.name = user.displayName
-            var updates = {}
-            updates[id] = val
-            db.ref('user').update(updates)
-          }
-          store.set('id', state.id)
-          store.set('user', val)
-          commit('log_user', val)
-        })
+        
+        
+        router.push('/aboutme')
       }).catch(function (error) {
         console.log('errorCode:' + error.code)
       })
     },
-    GOOGLELOGOUT () {
+    GOOGLELOGOUT ({dispatch, commit}) {
+      // var user = Firebase.auth().currentUser;
+      
       Firebase.auth().signOut().then(function() {
         // Sign-out successful.
-        store.clear()
+        storage.clear()
+        commit('logout')
+        //dispatch('GOOGLELOGIN')
         router.push('/')
       }, function(error) {
         // An error happened.
       });
     },
+    GET_USER ({commit, state}) {
+      db.ref('user/' + state.id).on('value', function (ref) {
+        var val = ref.val()
+        if (!val) {
+          val = defaultInfo
+          val.name = user.displayName
+          var updates = {}
+          updates[state.id] = val
+          db.ref('user').update(updates)
+        }
+        storage.set('id', state.id)
+        storage.set('user', val)
+        commit('log_user', val)
+        if (!state.bak_user) state.bak_user = _.cloneDeep(state.user)
+      })
+    },
     GET_LEAGUE ({commit}) {
       db.ref('league').on('value', function (ref) {
-        store.set('league', ref.val())
+        storage.set('league', ref.val())
         commit('log_league', ref.val())
       })
     },
     GET_RING ({commit}) {
       db.ref('ring').on('value', function (ref) {
-        store.set('ring', ref.val())
+        storage.set('ring', ref.val())
         commit('log_ring', ref.val())
       })
     },
     GET_AREA ({commit}) {
       db.ref('area').on('value', function (ref) {
-        store.set('area', ref.val())
+        storage.set('area', ref.val())
         commit('log_area', ref.val())
+      })
+    },
+    UPDATE_USER ({state}) {
+      var updates = {}
+      updates['user/' + state.id] = state.user
+      var a_update = [db.ref().update(updates)]
+      if (state.user.area != state.bak_user.area || state.user.ring != state.bak_user.ring)
+      {
+        a_update.push(db.ref('member/'+ state.bak_user.ring + '/' + state.bak_user.area + '/' + state.id).remove())
+        var members = {}
+        members['member/' + state.user.ring + '/' + state.user.area + '/' + state.id] = 1
+        a_update.push(db.ref().update(members))
+      }
+      Promise.all(a_update).then(() => {
+        alert('修改完成')
+        state.bak_user = _.cloneDeep(state.user)
+      })
+    },
+    UPDATE_CHANTING ({state}, payload) {
+      var updates = {}
+      updates['chanting/' + state.id + '/' + new Date().Format('Y-m-d')] = payload.mins
+      db.ref().update(updates).then(() => {
+        alert('恭喜完成今日題目數!!')
       })
     }
   },
   getters: {
     isLogin: state => {
-      return !!state.login_msg.user
+      // var user = Firebase.auth().currentUser
+      return !!state.login_msg.user // 
     }
   }
 })

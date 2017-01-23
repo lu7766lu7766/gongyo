@@ -67,8 +67,8 @@
     }
 
     #page-content-wrapper {
-        width: calc(100%);/*-250px*/
-        height: calc(100% - 90px);
+        width: calc(100% - 250px);
+        /*height: calc(100% - 90px);*/
     }
 
     #wrapper.toggled #page-content-wrapper {
