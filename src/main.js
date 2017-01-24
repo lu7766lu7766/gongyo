@@ -6,7 +6,7 @@ import router from './router'
 
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 import './assets/styles/slidebar.css'
-import './lib'
+import './assets/scripts/lib'
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
@@ -15,9 +15,9 @@ new Vue({
   router,
   mounted () {
     // Promise.all([store.dispatch('GET_LEAGUE'),store.dispatch('GET_RING'),store.dispatch('GET_AREA')]).then(() => { console.log('all done'')})
-    store.dispatch('GET_LEAGUE')
-    store.dispatch('GET_RING')
-    store.dispatch('GET_AREA')
+    // store.dispatch('GET_LEAGUE')
+    // store.dispatch('GET_RING')
+    // store.dispatch('GET_AREA')
     // console.log('main mounted') just first time
   }
 })

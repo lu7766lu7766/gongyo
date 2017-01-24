@@ -3,7 +3,7 @@
 		<h3><b>回報題目數</b></h3>
 		<div class="form-group">
 			<label>今日題目分鐘數:</label>
-			<input type="text" class="form-control" placeholder="今日題目分鐘數" v-model="mins" @focus="focusChanting">
+			<input type="text" class="form-control" placeholder="今日題目分鐘數" v-model.trim.number="mins" @focus="focusChanting($event)">
 		</div>
 		<div class="form-group">
 			<label>計時小幫手</label>:</label>
@@ -42,11 +42,12 @@ export default {
 				timer = null
 			}
 		},
-		focusChanting () {
+		focusChanting (e) {
 			if (!this.isAlerted) {
 				alert('立足於天地，但求無愧於心!')
 			}
 			this.isAlerted = true
+			e.target.select()
 		},
 		update_chanting () {
 			this.$store.dispatch('UPDATE_CHANTING', { mins: this.mins})

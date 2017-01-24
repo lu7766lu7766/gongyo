@@ -87,11 +87,13 @@ export default new Vuex.Store({
         var val = ref.val()
         if (!val) {
           val = defaultInfo
-          val.name = user.displayName
+          val.name = state.login_msg.user.displayName
+          val.photoURL = state.login_msg.user.photoURL
           var updates = {}
           updates[state.id] = val
           db.ref('user').update(updates)
         }
+
         storage.set('id', state.id)
         storage.set('user', val)
         commit('log_user', val)
@@ -129,6 +131,7 @@ export default new Vuex.Store({
       }
       Promise.all(a_update).then(() => {
         alert('修改完成')
+        storage.set('user', state.user)
         state.bak_user = _.cloneDeep(state.user)
       })
     },

@@ -70,7 +70,7 @@ export default {
       console.log('ring: ' + JSON.stringify(this.ring))
       console.log('area: ' + JSON.stringify(this.area))
       console.log('league: ' + JSON.stringify(this.league))
-      //console.log('login_msg: ' + JSON.stringify(this.login_msg))
+      console.log('login_msg: ' + JSON.stringify(this.login_msg))
     }
   },
   computed: {
