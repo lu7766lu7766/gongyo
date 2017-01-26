@@ -1,6 +1,9 @@
 <template>
   <div class="aboutme">
 		<h3><b>關於我</b></h3>
+    <div class="form-group">
+			<img :src="user.photoURL">
+		</div>
 		<div class="form-group">
 			<label>所屬圈:</label>
 			<select class="form-control" placeholder="所屬圈" v-model="user.ring" :disabled="!isEdit" @change="user.area = 0">

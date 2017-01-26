@@ -26,7 +26,7 @@
         <label>結束日期:</label>
         <datetimepicker className="datepicker form-control" v-model="stopDate"></datetimepicker>
     </div>
-
+    <br>
     <button class="btn btn-primary" @click="get_chanting">查詢</button>
 
   </div>

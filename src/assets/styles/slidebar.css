@@ -40,10 +40,12 @@
 
 #page-content-wrapper {
     width: 100%;
-    height: calc(100% - 90px);
+    height: calc(100% - 50px);
+    overflow-y: auto;
+    min-height: calc(100% - 50px);
     position: absolute;
     background-color: rgb(193, 230, 198);
-    padding: 15px 15px 0 15px;
+    padding: 15px 15px 50px 15px;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
@@ -78,7 +80,7 @@
 
     #footer {
         /*padding-left: 250px;*/
-        
+
     }
 }
 

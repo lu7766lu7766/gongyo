@@ -2,11 +2,11 @@
   <div class="feedback">
 		<h3><b>回報題目數</b></h3>
 		<div class="form-group">
-			<label>今日題目分鐘數:</label>
+      <label>今日題目分鐘數:</label>
 			<input type="text" class="form-control" placeholder="今日題目分鐘數" v-model.trim.number="mins" @focus="focusChanting($event)">
 		</div>
 		<div class="form-group">
-			<label>計時小幫手</label>:</label>
+      <label>計時小幫手:</label>&nbsp;&nbsp;<span v-show="isCounting">(秒數{{chanting}})</span>
 			<div class="form-inline">
 				<button class="btn btn-info" @click="startCounting">開始唱題</button>
 				<button class="btn btn-warning" @click="stopCounting">停止</button>
@@ -26,17 +26,20 @@ let timer
 export default {
   data () {
     return {
-      chanting: 0,
+      chanting: 10000,
+      isCounting: false,
 			isAlerted: false
     }
   },
 	methods: {
 		startCounting () {
+      this.isCounting = true
 			timer = setInterval(function () {
-				this.chanting+=20
+				this.chanting += 1
 			}.bind(this), 1000)
 		},
 		stopCounting () {
+      this.isCounting = false
 			if (timer) {
 				clearInterval(timer)
 				timer = null
@@ -53,7 +56,7 @@ export default {
 			this.$store.dispatch('UPDATE_CHANTING', { mins: this.mins})
 		}
 	},
-  computed: { 
+  computed: {
 		mins: {
 			get () {
 				return Math.floor(this.chanting / 60)

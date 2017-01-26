@@ -13,15 +13,15 @@
               <li><router-link to="/feedback">回報題目數</router-link></li>
               <li><router-link to="/getchanting">查題目數</router-link></li>
               <li><router-link to="/aboutme">關於我</router-link></li>
-              
+
               <li><router-link to="/friends">好友</router-link></li>
               <li><a v-if="!isLogin" @click="login">登入</a></li>
               <li><a v-if="isLogin" @click="logout">登出</a></li>
-              <li><a @click="showLog">Show Log</a></li>
+              <li><a v-if="id=='lu7766lu7766'" @click="showLog">Show Log</a></li>
             </ul>
         </div>
         <div id="page-content-wrapper" style="min-height: 246.909px;">
-            <div id="main-content" class="container-fluid" style="min-height: 182px; padding-bottom: 15px;">{{id}}--
+            <div id="main-content" class="container-fluid" style="min-height: 182px; padding-bottom: 15px;">
                 <router-view transition="slide"></router-view>
             </div><!--main-content-->
         </div><!--page-content-wrapper-->
@@ -62,7 +62,7 @@ export default {
     },
     logout () {
       this.$store.dispatch('GOOGLELOGOUT')
-    }, 
+    },
     showLog () {
       console.log('id: ' + this.id)
       console.log('user: ' + JSON.stringify(this.user))
