@@ -1,11 +1,11 @@
 { 
   "Firebase": {
     "config": {
-        "apiKey": "AIzaSyCRhcanMYI9e4T9eUpkpqkTZgYkQI6ehK0",
-        "authDomain": "gongyo-ae621.firebaseapp.com",
-        "databaseURL": "https://gongyo-ae621.firebaseio.com",
-        "storageBucket": "gongyo-ae621.appspot.com",
-        "messagingSenderId": "912768128140"
+        "apiKey": "AIzaSyDdxiT3V1ClPjvrs6pWoS2giJfjk69xnq8",
+        "authDomain": "sgigongyo.firebaseapp.com",
+        "databaseURL": "https://sgigongyo.firebaseio.com",
+        "storageBucket": "sgigongyo.appspot.com",
+        "messagingSenderId": "166048627038"
     },
     "defaultInfo": {
       "area" : "",

@@ -8,12 +8,16 @@
 		<div class="form-group">
       <label>計時小幫手:</label>&nbsp;&nbsp;<span v-show="isCounting">(秒數{{chanting}})</span>
 			<div class="form-inline">
-				<button class="btn btn-info" @click="startCounting">開始唱題</button>
-				<button class="btn btn-warning" @click="stopCounting">停止</button>
-				<button class="btn btn-danger" @click="chanting=0">重置</button>
+				<button v-if="!isCounting" class="btn btn-info" @click="startCounting">開始唱題</button>
+				<button v-if="isCounting" class="btn btn-warning" @click="stopCounting">停止</button>
+				<button v-if="chanting > 0" class="btn btn-danger" @click="chanting=0">重置</button>
 			</div>
 		</div>
 		<button class="btn btn-primary" @click="update_chanting">送出</button>
+		<br>
+		<label>
+			備註:送出以手機(電腦)時間為主，請務必校正時間
+		</label>
 		<!--<br>
 		{{user|json}}<br>-->
   </div>
@@ -53,7 +57,17 @@ export default {
 			e.target.select()
 		},
 		update_chanting () {
-			this.$store.dispatch('UPDATE_CHANTING', { mins: this.mins})
+			if (this.mins < this.$Store.dailyTarget) {
+				if (confirm ('尚未達成今日目標數喔！確定要送出嗎')) {
+					Promise.resolve(this.$store.dispatch('UPDATE_CHANTING', { mins: this.mins})).then(function () {
+						alert('有空記得把今天的題目補齊喔')
+					})
+				}
+			} else {
+				this.$store.dispatch('UPDATE_CHANTING', { mins: this.mins})
+			}
+			
+			
 		}
 	},
   computed: {
