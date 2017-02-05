@@ -10,7 +10,7 @@
 			<div class="form-inline">
 				<button v-if="!isCounting" class="btn btn-info" @click="startCounting">開始唱題</button>
 				<button v-if="isCounting" class="btn btn-warning" @click="stopCounting">停止</button>
-				<button v-if="chanting > 0" class="btn btn-danger" @click="chanting=0">重置</button>
+				<button v-if="chanting > 0 && !isCounting" class="btn btn-danger" @click="chanting=0">重置</button>
 			</div>
 		</div>
 		<button class="btn btn-primary" @click="update_chanting">送出</button>
@@ -30,7 +30,7 @@ let timer
 export default {
   data () {
     return {
-      chanting: 10000,
+      chanting: 0,
       isCounting: false,
 			isAlerted: false
     }
@@ -66,8 +66,6 @@ export default {
 			} else {
 				this.$store.dispatch('UPDATE_CHANTING', { mins: this.mins})
 			}
-			
-			
 		}
 	},
   computed: {

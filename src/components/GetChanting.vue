@@ -35,10 +35,11 @@
 <script>
 import { mapState } from 'vuex'
 import DateTimePicker from './subComponents/datetimepicker'
-
+import mixin from '../mixins.js'
 // Vue.use(VueTimepicker)
 
 export default {
+  mixins: [mixin],
   data () {
     return {
       searchMode: 0,
@@ -65,48 +66,63 @@ export default {
       if (this.searchMode == 0) {
         // this.startDate.match("/\d{4}-\d{2}-\d{2}/") && this.stopDate.match("/\d{4}-\d{2}-\d{2}/")
 
-        Promise.resolve(this.get_onceChantings(this.$store.state.id)).then(function (val) {
+        Promise.resolve(this.get_onceChantings(this.id)).then(function (val) {
           alert('目前累計題目數:' + this.totalChanting + '分鐘')
         }.bind(this))
       } else {
         let promises = []
         if (this.partnerMode == 0) { //圈
-          this.$store.state.db.ref('member/' + this.$store.state.user.ring).on('value', function (result) {
+
+          // console.log(this.user.ring)
+          // this.$store.state.db.ref('member/'+this.user.ring).once('value', function (result) {
+          //   console.log(result.val())
+          // })
+          this.$store.state.db.ref('member/' + this.$store.state.user.ring).once('value', function (result) {
+          // this.get_ringMembers(this.user.ring).on('value', function (result) {
             const ring_members = result.val()
             Object.keys(ring_members).map(function (area_id) {
-              Object.keys(ring_members[area_id]).map(function (member_id) { // 這段可以抽出來
-                //this.members.push(member_id)
-                promises.push(this.get_onceChantings(member_id))
-              }.bind(this))
+              promises = promises.concat(this.get_areaMembersChangtins(ring_members[area_id]))
             }.bind(this))
             Promise.all(promises).then(function (val) {
               alert('目前' + this.currentRing + '累計題目數:' + this.totalChanting + '分鐘')
             }.bind(this))
+
           }.bind(this))
         } else if (this.partnerMode == 1) { // 區
-          this.$store.state.db.ref('member/' + this.$store.state.user.ring + '/' + this.$store.state.user.area).on('value', function (result) {
+          // this.$store.state.db.ref('member/' + this.$store.state.user.ring + '/' + this.$store.state.user.area).on('value', function (result) {
+            this.get_areaMembers(this.user.ring, this.user.area).on('value', function (result) {
             const area_members = result.val()
-            Object.keys(area_members).map(function (member_id) {
-              //this.members.push(member_id)
-              promises.push(this.get_onceChantings(member_id))
-            }.bind(this))
+
+            promises = promises.concat(this.get_areaMembersChangtins(area_members))
+
             Promise.all(promises).then(function (val) {
               alert('目前' + this.currentArea + '累計題目數:' + this.totalChanting + '分鐘')
             }.bind(this))
+
           }.bind(this))
         }
       }
     },
     get_onceChantings (id) {
-      return this.$store.state.db.ref('chanting/' + id)
+      return this.db.ref('chanting/' + id)
         .orderByKey()
         .startAt(this.startDate)
         .endAt(this.stopDate)
         .once('value').then(function (result) {
-          this.chantings[this.$store.state.id] = result.val()
+          if (result.val()) {
+            this.chantings[id] = result.val()
+          }
           // return 'a'
           // alert('目前累計題目數:' + this.totalChanting + '分鐘')
       }.bind(this))
+    },
+    get_areaMembersChangtins (area_members) {
+      let promises = []
+      Object.keys(area_members).map(function (member_id) { // 這段可以抽出來
+        //this.members.push(member_id)
+        promises.push(this.get_onceChantings(member_id))
+      }.bind(this))
+      return promises
     }
 	},
   computed:	{
@@ -127,6 +143,8 @@ export default {
       return this.areas[this.user.ring][this.user.area] + '區'
     },
     ...mapState({
+      db: 'db',
+      id: 'id',
       user: 'user',
       rings: 'ring',
       areas: 'area',

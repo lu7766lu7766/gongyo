@@ -2,7 +2,7 @@
   <div class="aboutme">
 		<h3><b>關於我</b></h3>
     <div class="form-group">
-			<img :src="user.photoURL">
+			<img :src="user.photoURL" class="my-photo">
 		</div>
 		<div class="form-group">
 			<label>所屬圈:</label>
@@ -68,5 +68,12 @@ export default {
 </script>
 
 <style scoped>
-
+  .my-photo {
+    width: 150px
+  }
+  @media(max-width:768px) {
+    .my-photo {
+      width: 100%
+    }
+  }
 </style>

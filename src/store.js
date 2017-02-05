@@ -7,6 +7,8 @@ import storage from 'store'
 import router from './router'
 import _ from 'lodash'
 
+let hello = require('../node_modules/hellojs/dist/hello.all.min.js')
+
 var dbConf = config.Firebase.config
 var defaultInfo = config.Firebase.defaultInfo
 var firebaseApp = Firebase.initializeApp(dbConf)
@@ -16,8 +18,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    browser: '',
     db: db,
-    id: storage.get('id') || "",
+    id: storage.get('id') || '',
     login_msg: storage.get('login_msg') || {},
     user: storage.get('user') || {},
     bak_user: storage.get('user') || {},
@@ -49,10 +52,11 @@ export default new Vuex.Store({
       state.ring = {}
       state.area = {}
       state.league = {}
+      state.bak_user = {}
     }
   },
   actions: {
-    GOOGLELOGIN ({commit, state, dispatch}) {
+    GOOGLELOGIN_FIREBASE ({commit, state, dispatch}) {
       var provider = new Firebase.auth.GoogleAuthProvider()
       provider.addScope('https://www.googleapis.com/auth/plus.login')
       Firebase.auth().signInWithPopup(provider).then(function (result) {
@@ -69,7 +73,36 @@ export default new Vuex.Store({
         console.log('errorCode:' + error.code)
       })
     },
-    GOOGLELOGOUT ({dispatch, commit}) {
+    GOOGLELOGIN_HELLO ({commit, state, dispatch}) {
+
+      hello.init({
+        google: "166048627038-sl2t9absnr0g5shfard0ovf52naqghmj.apps.googleusercontent.com"
+      }, {
+        // redirect_uri: 'http://localhost:8080/',
+        // response_type: 'code',
+        scope : 'publish, friends, photos, email'
+      });
+
+      hello('google').login().then(function () {
+        // alert('You are signed in to google');
+        const token = hello('google').getAuthResponse().access_token
+
+        hello('google').api('me').then(function (user) {
+          console.log(user)
+          var loginMsg = {token, user}
+          storage.set('login_msg', loginMsg)
+          commit('log_login_msg', loginMsg)
+          router.push('/aboutme')
+        }, function(e) {
+          console.log(e.error.message)
+        });
+
+        console.log(token)
+      }, function(e) {
+          alert('Signin error: ' + e.error.message);
+      })
+    },
+    GOOGLELOGOUT_FIREBASE ({dispatch, commit}) {
       // var user = Firebase.auth().currentUser;
 
       Firebase.auth().signOut().then(function() {
@@ -80,15 +113,34 @@ export default new Vuex.Store({
         router.push('/')
       }, function(error) {
         // An error happened.
+      })
+    },
+    GOOGLELOGOUT_HELLO ({dispatch, commit}) {
+      hello('google').logout().then(function() {
+        storage.clear()
+        commit('logout')
+        router.push('/')
+      }, function(e) {
+        // alert('Signed out error: ' + e.error.message);
+        console.log(e.error.message)
       });
+
     },
     GET_USER ({commit, state}) {
       db.ref('user/' + state.id).on('value', function (ref) {
         var val = ref.val()
         if (!val) {
           val = defaultInfo
-          val.name = state.login_msg.user.displayName
-          val.photoURL = state.login_msg.user.photoURL
+
+          const isFirebase = !!state.login_msg.user.photoURL
+          if (isFirebase) {
+            val.name = state.login_msg.user.displayName
+            val.photoURL = state.login_msg.user.photoURL
+          } else {
+            val.name = state.login_msg.user.name
+            val.photoURL = state.login_msg.user.picture.split('sz=')[0] + 'sz=450'
+          }
+
           var updates = {}
           updates[state.id] = val
           db.ref('user').update(updates)
@@ -97,7 +149,9 @@ export default new Vuex.Store({
         storage.set('id', state.id)
         storage.set('user', val)
         commit('log_user', val)
-        if (!state.bak_user) state.bak_user = _.cloneDeep(state.user)
+
+        // if (!state.bak_user)
+        state.bak_user = _.cloneDeep(state.user)
       })
     },
     GET_LEAGUE ({commit}) {

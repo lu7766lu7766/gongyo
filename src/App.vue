@@ -61,7 +61,8 @@ export default {
       this.$router.push('/')
     },
     logout () {
-      this.$store.dispatch('GOOGLELOGOUT')
+      this.$store.dispatch('GOOGLELOGOUT_FIREBASE')
+      // this.$store.dispatch('GOOGLELOGOUT_HELLO')
     },
     showLog () {
       console.log('id: ' + this.id)
